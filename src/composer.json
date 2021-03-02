@@ -1,0 +1,24 @@
+{
+    "name": "plus54/m2-cloudflare-access",
+    "description": "Authorize CloudFlare Access requests",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Mage2Gen",
+            "email": "info@mage2gen.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "firebase/php-jwt": "^5.2.1"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Plus54\\CloudFlare\\": ""
+        }
+    }
+}
