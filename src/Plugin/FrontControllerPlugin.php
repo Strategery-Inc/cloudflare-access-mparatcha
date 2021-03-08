@@ -6,6 +6,7 @@ namespace Plus54\CloudFlareAccess\Plugin;
 use Magento\Framework\App\FrontController;
 use Magento\Framework\App\RequestInterface;
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\JWK;
 
 /**
  *
@@ -29,7 +30,16 @@ class FrontControllerPlugin
                 0tyazyZ8JXw+KgXTxldMPEL95+qVhgXvwtihXC1c5oGbRlEDvDF6Sa53rcFVsYJ4
                 ehde/zUxo6UvS7UrBQIDAQAB
                 -----END PUBLIC KEY-----
-                EOD]]; //mock
+                EOD]];    //mock
+       /* $jwks =  [<<<EOD
+                -----BEGIN PUBLIC KEY-----
+                MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8kGa1pSjbSYZVebtTRBLxBz5H
+                4i2p/llLCrEeQhta5kaQu/RnvuER4W8oDH3+3iuIYW4VQAzyqFpwuzjkDI+17t5t
+                0tyazyZ8JXw+KgXTxldMPEL95+qVhgXvwtihXC1c5oGbRlEDvDF6Sa53rcFVsYJ4
+                ehde/zUxo6UvS7UrBQIDAQAB
+                -----END PUBLIC KEY-----
+                EOD];
+*/
         return $jwks;
 
     }
@@ -72,15 +82,15 @@ class FrontControllerPlugin
 
         //validar token con libreria jwt
         $jwks = $this->getPublicKeys();
-        try {
-            $result = JWT::decode($payload, JWT::parseKeySet($jwks), self::ALGORITHM);
+      //  try {
+            $result = JWT::decode($payload, JWK::parseKeySet($jwks['keys']), self::ALGORITHM);
             if ($payload['email'] !== "admin@example.com") {
                 //deny access
                 var_dump('access denied');die;
             }
-        } catch (\Exception $e) {
-            die('oops');
-        }
+       // } catch (\Exception $e) {
+       //     die('oops');
+       // }
     }
 }
 
