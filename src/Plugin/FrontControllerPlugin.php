@@ -23,14 +23,14 @@ class FrontControllerPlugin
         //$this->curl->get(self::CERTS_URL);
         //request = '';
 
-        $jwks =  ['keys' => [<<<EOD
-                -----BEGIN PUBLIC KEY-----
-                MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8kGa1pSjbSYZVebtTRBLxBz5H
-                4i2p/llLCrEeQhta5kaQu/RnvuER4W8oDH3+3iuIYW4VQAzyqFpwuzjkDI+17t5t
-                0tyazyZ8JXw+KgXTxldMPEL95+qVhgXvwtihXC1c5oGbRlEDvDF6Sa53rcFVsYJ4
-                ehde/zUxo6UvS7UrBQIDAQAB
-                -----END PUBLIC KEY-----
-                EOD]];    //mock
+        $jwks =  ['keys' => [[<<<EOD
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8kGa1pSjbSYZVebtTRBLxBz5H
+4i2p/llLCrEeQhta5kaQu/RnvuER4W8oDH3+3iuIYW4VQAzyqFpwuzjkDI+17t5t
+0tyazyZ8JXw+KgXTxldMPEL95+qVhgXvwtihXC1c5oGbRlEDvDF6Sa53rcFVsYJ4
+ehde/zUxo6UvS7UrBQIDAQAB
+-----END PUBLIC KEY-----
+EOD]]];    //mock
 
         return $jwks;
 
@@ -75,7 +75,8 @@ class FrontControllerPlugin
         //validar token con libreria jwt
         $jwks = $this->getPublicKeys();
       //  try {
-            $result = JWT::decode($payload, JWK::parseKeySet($jwks), array(self::ALGORITHM));
+        // var_dump(json_encode($jwks));die;
+            $result = JWT::decode($payload, JWK::parseKeySet($jwks), [self::ALGORITHM]);
             if ($payload['email'] !== "admin@example.com") {
                 //deny access
                 var_dump('access denied');die;
