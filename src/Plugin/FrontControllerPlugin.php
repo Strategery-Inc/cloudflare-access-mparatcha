@@ -30,8 +30,9 @@ class FrontControllerPlugin
                     "kty": "RSA",
                     "e": "AQAB",
                     "use": "sig",
-                    "kid": "ZKG1ockLVMd5ynqmWPaavMA23Ve9TJunU9VvLum5k1s",
-                    "n": "mLkHatFdXX0gR9k1m_uTVTbF-ZAzp6dxosAOF7OJyCjXQ8L2lxDPT0ZjyqVJ_JfX9cxOKOhluQ54y-Z367yvvJsI7pa6SQJY0jwiuetPQKO6m9hkTrOvEqwGKDPgkg_I8-QyGROPMTIhUE21c9Vz8O-jqysq_-zpdaOA3UVHASn4e4sscyY-XvWF0c_s73uaCfHOvLgTuNGd8LNjE0eCDgcGRNVqikPguY4kqWQoTv18RmS3v232j7oO6e1CVk_2xNiGFZlrVX-xDNyKatGhV4X3mib9BNfL5hQkWffpy_rpwnqADIz6oRO11fiYiKV4PX_HOjZqGon2FfbpiCb8SQ"
+                    "kid": "CYlS9DhnWY5ZTJUgS0T9EPBn27GOSe3_j9kvnIxrTvs",
+                    "alg": "RS256",
+                    "n": "sIwq-9w8855KYXCY4gjfgTy2lKg7QyL6j2mSGdn6GodDIYfF1gbL7R8aauymf8yAyoo1MnalxGJVy4oSKW25krUyvKKVuLx4DwQcaUCCuhlIUTUHqe8-0IxdBhO7jJdhVNvlN568rFk5VDkoAxJe4Gl4vyAX0XrZk7VNyijZf4YKRpDDxLpPMUXjt8CayDAOGp-bn30uY-8pbvIHJe0fslVZ_aXxDrXoRq5i5ST_YxayjDjEn0yvlUqwbAHnbdU0V389abFZGAp-4RHpIje_Yf3PP2G-FG8Ybc1ifaz-I5tFmrdvwa9ws3zaomnM111Dt3qUPvgsxRWcNVfyTfyMHw"
                 }
             ]
         }
@@ -44,36 +45,36 @@ EOD,
     }
 
     public function getMockPayload(){
-        // used https://mkjwk.org/ to generate test key,
-        // then used https://8gwifi.org/jwkconvertfunctions.jsp to get PEM version 
+        // used https://mkjwk.org/ to generate test public & private key
         $privateKey = <<<EOD
-        -----BEGIN RSA PRIVATE KEY-----
-        MIIEowIBAAKCAQEAmLkHatFdXX0gR9k1m/uTVTbF+ZAzp6dxosAOF7OJyCjXQ8L2
-        lxDPT0ZjyqVJ/JfX9cxOKOhluQ54y+Z367yvvJsI7pa6SQJY0jwiuetPQKO6m9hk
-        TrOvEqwGKDPgkg/I8+QyGROPMTIhUE21c9Vz8O+jqysq/+zpdaOA3UVHASn4e4ss
-        cyY+XvWF0c/s73uaCfHOvLgTuNGd8LNjE0eCDgcGRNVqikPguY4kqWQoTv18RmS3
-        v232j7oO6e1CVk/2xNiGFZlrVX+xDNyKatGhV4X3mib9BNfL5hQkWffpy/rpwnqA
-        DIz6oRO11fiYiKV4PX/HOjZqGon2FfbpiCb8SQIDAQABAoIBAFQHglBAj+lvfkJp
-        /bgsTJ1XPMiakgFN/RU6LMbXrxileAO9kuX9hsMsjJ2kIjhL57RDTEHv1IBkuQwf
-        a54WPG8+skRsRGUFWI+cLNM06G89ZuB2yIIRFWPlqKGYIZjb/IpM5U+s1l2QIopH
-        p23rZRaNE/WLE+aqmK10X+PfSTkW4AvWLetKLIGRD1IAIYAx3dpuOpba8XmJpT+I
-        LTnsM4Z6dzH3rVV89A7jYVXzJOEWxRl0xlLuqd3nlh6XXby6e2vuZzGsv+ty4Tic
-        GjOwtmuputuxcuQq3nbo0xpBJB+Y8SvUcatcCOj3VqjDHhEpY/35AL/0ynfYjJ+Z
-        Hd+fJrECgYEAysrtlCR/N7PD8fNvQvs7ecOYqpRkEohYW7SCHASyVVsRd6tCUrdc
-        Dz0wJd8hT3tRCCG+GLHIXFi1yRWBE8NRK51JRV0IpBzqSPF/uhQe3W6IWqTi1ud0
-        sEZRs2F1sEnXU2eMusmNoSpuhUdNDdxoL6upEa/lPp3VtmGQkheuRH0CgYEAwMsH
-        +ai1aTm5z2z9GOcDs7xj/wbUO6g/gYo2dG3ThN6mQhmX3m42La5EKnFCOTNZQrx+
-        zxrJwR2yXa7I6bc47Eq9HVKKFEUt9JhNzo7kKaLGmkkhUJC2dVd6S9x4m/kMNAsT
-        nUPAidp9k8djrpgb76c8j2jIS8rVba/bosCf3L0CgYEAmqBexM2LXzqn1q3KkWUk
-        9XRJzQ82utbRoKMjbh+6ptC4oemouY9sF4aNVuMq8ALUR4ILA6NTZe6SNdA6yons
-        M3hLrSMB+ri9f3786DJ9UlP8jjkZacm0NNB5bXCLny6+i67yJF6YqmHDQcabH02G
-        94pJcN4Qy0zn7pe3910tGLUCgYAjGFJ5VgbAAuwaIELqd5Mq8s5ZLEsSGQyGbjx/
-        cUah1034lmQY74MZSbHK8BcYBornJR0IYl37s4Y2m4yjTuEj0m8emVndWsKE1fzD
-        7ysFkUYJ6+oOmmk8bxIqIRYrfmiESMfnRuATuBxH/HHe5H2hYJYbnP1pHqE/eFXJ
-        CLuRGQKBgFWEZFp4xEo1fMDlBgPyhOxEaarBwakUvsxl/k59k2mHWhfraSJiKoHd
-        cmqxEF04smalcpea/h+Hyjr1A6GD6mPhrNuaGMVF01w0RtVasESW9pIyNzLRhz7S
-        XAcoR7PYTgmjIeI6u3iryR/nWBVxs7NVCjXPFLVSmxJyE/zq6M1k
-        -----END RSA PRIVATE KEY-----        
+        -----BEGIN PRIVATE KEY-----
+        MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwjCr73Dzznkph
+        cJjiCN+BPLaUqDtDIvqPaZIZ2foah0Mhh8XWBsvtHxpq7KZ/zIDKijUydqXEYlXL
+        ihIpbbmStTK8opW4vHgPBBxpQIK6GUhRNQep7z7QjF0GE7uMl2FU2+U3nrysWTlU
+        OSgDEl7gaXi/IBfRetmTtU3KKNl/hgpGkMPEuk8xReO3wJrIMA4an5uffS5j7ylu
+        8gcl7R+yVVn9pfEOtehGrmLlJP9jFrKMOMSfTK+VSrBsAedt1TRXfz1psVkYCn7h
+        EekiN79h/c8/Yb4UbxhtzWJ9rP4jm0Wat2/Br3CzfNqiaczXXUO3epQ++CzFFZw1
+        V/JN/IwfAgMBAAECggEABu/K9JBnuK68f22cJC1zErHe/qJJic7DB4V/XxKoeAhe
+        g9/AzzL/Kjbxo8feluDjIpIhmvT8eGXgtxmasxQDmZcTAkRlG5gUI4rmzt/hAwzh
+        QYeS4INs9Wa+dPGric+c3GezbucGxMLQtNV2FADRx4F9ZA0PwoRQLjSOdOX7/b2m
+        zpZTGvo6tdH52bro8ugkixpItZOnJESAWhxlgk0ZiJAo50yAeUBQOeQlGVxxh0Do
+        j790hjeLT56X354nYk6UgQyG5zjHYSBda2n4T25AW/X7R4hXrG+pr0GVA2RNa1Aq
+        qQtT+z7FvC+HIgPWr+CMHr7OrG20MWI2syXnxzyWMQKBgQDXPpyAUWV6anOYsFDa
+        57hQcGRntMygZEUyJu4GkX1Xx+lCj6kHIPTQYWhTSblydgQPZp9bcbSxMStIi1OJ
+        mQ2VDtEOtTRT/2Aai9rZOuHIZicuBzKaUOVcxSm5c7JfEZlFJ6mWwkXEgGhIU5Fs
+        jVQ/7AOO1PIW6TcF43Nf1pByFwKBgQDR+dLjx+cBgnQT+yHwA1qqjWrXq9JidjR+
+        B9EjZ++/Zjo8qmS6boVlONjNWEJnFABDcSemc60d/VWjgdWJbfxVDlG6nEMZYw4n
+        HRra39LaoO/boDZgbjRSSMY7FfokoFC+N2eee7WHt61YMbf+42m/kLdm61QQ+oyP
+        Oaybf9YjOQKBgQC0uRtKGg2sNQkN4KxiwEBfOZ7z/Df7S3VV4J3l4e5t76oIevqe
+        w6sJ819W3wXX9wL9s1qFuvjN9cyzwlfHpjxjNOePA9IF3NviLh74WZoNWsf2u5Bf
+        RSDvPZQE5AGWFP6ts9mOfVt6252zbIcjr55XdWCfYmhJmFLcnNbYVx08zQKBgFYP
+        i+U6MK9ItaTe4GkMJuQSdEETNnaOtjMVpx1Y40XSc3ob6I8U722uYAXB7+1poDYE
+        MdkiPkk1ZR1QAKKERtDhvpO6qjHEjK9xWWluJXDgV47v2nmpkZ5MH5tmBZFvd8iO
+        0tR9JckLemvUbPJ2aQhQGyt+toUC/AtT+y/8tFrZAoGAHnBcZnAJ/YUZD2Up9x95
+        FI2SuA3LeiHfHUtWKq/Tu/7LG9/JergcGvrexSkX6vditVWHSDrtnWf+3UZrf7LT
+        QnejtRYkikG25kwQFbBOjXFd776921fvIAsMie3Fnc6XUfiHAWelRgDgKL5lLcdy
+        5bLzkpAmi7xc8vqaQVJu9qw=
+        -----END PRIVATE KEY-----
 EOD;
         $payload = array(
             "iss" => "example.org",
