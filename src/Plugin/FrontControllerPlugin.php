@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Plus54\CloudFlareAccess\Plugin;
 use Magento\Framework\App\FrontController;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\HTTP\Client\Curl;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\JWK;
+
 
 /**
  *
@@ -14,30 +16,42 @@ use \Firebase\JWT\JWK;
  */
 class FrontControllerPlugin
 {
-    public const TEAM_DOMAIN = 'https://cloudflare.com';
+    public const TEAM_DOMAIN = 'https://hyva.ancord.io';
     public const CERTS_URL = self::TEAM_DOMAIN .'/cdn-cgi/access/certs';
     public const ALGORITHM = 'RS256';
+    protected $curlClient;
+
+    /**
+     * @param Curl $curl
+     */
+    public function __construct (Curl $curl) {
+        $this->curlClient = $curl;
+    }
 
     public function getPublicKeys(): array
     {
         //$this->curl->get(self::CERTS_URL);
         //request = '';
+        $this->curlClient->get('https://hyva.ancord.io/cdn-cgi/access/certs');
+        $jwks = json_decode($this->curlClient->getBody(), true);
+     /*   $jwks2 = \json_decode(<<<EOD
+         {
+         "keys": [
+         {
+         "kty": "RSA",
+         "e": "AQAB",
+         "use": "sig",
+         "kid": "ZKG1ockLVMd5ynqmWPaavMA23Ve9TJunU9VvLum5k1s",
+         "n": "mLkHatFdXX0gR9k1m_uTVTbF-ZAzp6dxosAOF7OJyCjXQ8L2lxDPT0ZjyqVJ_JfX9cxOKOhluQ54y-Z367yvvJsI7pa6SQJY0jwiuetPQKO6m9hkTrOvEqwGKDPgkg_I8-QyGROPMTIhUE21c9Vz8O-jqysq_-zpdaOA3UVHASn4e4sscyY-XvWF0c_s73uaCfHOvLgTuNGd8LNjE0eCDgcGRNVqikPguY4kqWQoTv18RmS3v232j7oO6e1CVk_2xNiGFZlrVX-xDNyKatGhV4X3mib9BNfL5hQkWffpy_rpwnqADIz6oRO11fiYiKV4PX_HOjZqGon2FfbpiCb8SQ"
+         }
+         ]
+         }
+        EOD,
+            true
+        );*/
 
-        $jwks = \json_decode(<<<EOD
-                {
-                    "kty": "RSA",
-                    "e": "AQAB",
-                    "use": "sig",
-                    "kid": "CYlS9DhnWY5ZTJUgS0T9EPBn27GOSe3_j9kvnIxrTvs",
-                    "alg": "RS256",
-                    "n": "sIwq-9w8855KYXCY4gjfgTy2lKg7QyL6j2mSGdn6GodDIYfF1gbL7R8aauymf8yAyoo1MnalxGJVy4oSKW25krUyvKKVuLx4DwQcaUCCuhlIUTUHqe8-0IxdBhO7jJdhVNvlN568rFk5VDkoAxJe4Gl4vyAX0XrZk7VNyijZf4YKRpDDxLpPMUXjt8CayDAOGp-bn30uY-8pbvIHJe0fslVZ_aXxDrXoRq5i5ST_YxayjDjEn0yvlUqwbAHnbdU0V389abFZGAp-4RHpIje_Yf3PP2G-FG8Ybc1ifaz-I5tFmrdvwa9ws3zaomnM111Dt3qUPvgsxRWcNVfyTfyMHw"
-                }
-                
-EOD, true
-        );
 
-        return ['keys' =>[$jwks]];
-
+        return $jwks;
     }
 
     public function getMockPayload(){
