@@ -19,6 +19,7 @@ class FrontControllerPlugin
     public const TEAM_DOMAIN = 'https://hyva.ancord.io';
     public const CERTS_URL = self::TEAM_DOMAIN .'/cdn-cgi/access/certs';
     public const ALGORITHM = 'RS256';
+
     protected $curlClient;
 
     /**
@@ -30,32 +31,12 @@ class FrontControllerPlugin
 
     public function getPublicKeys(): array
     {
-        //$this->curl->get(self::CERTS_URL);
-        //request = '';
         $this->curlClient->get('https://hyva.ancord.io/cdn-cgi/access/certs');
         $jwks = json_decode($this->curlClient->getBody(), true);
-     /*   $jwks2 = \json_decode(<<<EOD
-         {
-         "keys": [
-         {
-         "kty": "RSA",
-         "e": "AQAB",
-         "use": "sig",
-         "kid": "ZKG1ockLVMd5ynqmWPaavMA23Ve9TJunU9VvLum5k1s",
-         "n": "mLkHatFdXX0gR9k1m_uTVTbF-ZAzp6dxosAOF7OJyCjXQ8L2lxDPT0ZjyqVJ_JfX9cxOKOhluQ54y-Z367yvvJsI7pa6SQJY0jwiuetPQKO6m9hkTrOvEqwGKDPgkg_I8-QyGROPMTIhUE21c9Vz8O-jqysq_-zpdaOA3UVHASn4e4sscyY-XvWF0c_s73uaCfHOvLgTuNGd8LNjE0eCDgcGRNVqikPguY4kqWQoTv18RmS3v232j7oO6e1CVk_2xNiGFZlrVX-xDNyKatGhV4X3mib9BNfL5hQkWffpy_rpwnqADIz6oRO11fiYiKV4PX_HOjZqGon2FfbpiCb8SQ"
-         }
-         ]
-         }
-        EOD,
-            true
-        );*/
-
-
         return $jwks;
     }
 
     public function getMockPayload(){
-        // used https://mkjwk.org/ to generate test public & private key
         $privateKey = <<<EOD
 -----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwjCr73Dzznkph
@@ -93,33 +74,26 @@ EOD;
             "nbf" => 1357000000
         );
 
-        // $jwt = JWT::encode($payload, $privateKey, 'RS256');
-        return JWT::encode($payload, $privateKey, self::ALGORITHM, "CYlS9DhnWY5ZTJUgS0T9EPBn27GOSe3_j9kvnIxrTvs");
+        return JWT::encode($payload, $privateKey, self::ALGORITHM, "871a7fabf77ffd290b497561e18fe76460b393a1fbc9442c7f53c54e5eebaa5e");
     }
-    public function beforeDispatch(FrontController $subject, RequestInterface $request)
+    public function aroundDispatch(FrontController $subject, RequestInterface $request)
     {
-      //  $payload = $request->getCookie('CF_Authorization');
-        $payload = $this->getMockPayload(); //TODO: mock
+        $payload = $this->getMockPayload();
 
         if (null === $payload) {
             throw new \Exception('missing required cf authorization token');
         }
 
-        //validar token con libreria jwt
         $jwks = $this->getPublicKeys();
-      //  try {
-        // var_dump(json_encode($jwks));die;
-        //$decoded = JWT::decode($jwt, $publicKey, array('RS256'));
-       // var_dump($payload);die;
+
+        try {
             $result = JWT::decode($payload, JWK::parseKeySet($jwks), array('RS256'));
-            //var_dump($result);die;
             if ($result->iss !== "example.org") {
-                //deny access
-                var_dump('access denied');die;
+                throw new \Exception('Access denied.');
             }
-       // } catch (\Exception $e) {
-       //     die('oops');
-       // }
+        } catch (\Exception $e) {
+            throw new \Exception('Something was wrong, try again.');
+        }
     }
 }
 
