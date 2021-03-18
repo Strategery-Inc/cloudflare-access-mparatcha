@@ -11,6 +11,10 @@ use \Firebase\JWT\JWK;
 
 class TokenValidator {
 
+    public const TEAM_DOMAIN = 'https://hyva.ancord.io';
+    public const CERTS_URL = self::TEAM_DOMAIN .'/cdn-cgi/access/certs';
+    public const ALGORITHM = 'RS256';
+
     private $curl;
     private $json;
 
@@ -40,10 +44,10 @@ class TokenValidator {
      * @param $algorithm
      * @return object
      */
-    public function validateToken(string $token, string $url, string $algorithm) : object
+    public function validateToken(string $token) : object
     {
-        $jwks = $this->getPublicKeys($url);
-        return JWT::decode($token, JWK::parseKeySet($jwks), array($algorithm));
+        $jwks = $this->getPublicKeys(self::CERTS_URL);
+        return JWT::decode($token, JWK::parseKeySet($jwks), array(self::ALGORITHM));
     }
 
 }

@@ -14,10 +14,7 @@ use Magento\Framework\App\FrontController;
  */
 class FrontControllerPlugin
 {
-    public const TEAM_DOMAIN = 'https://hyva.ancord.io';
-    public const CERTS_URL = self::TEAM_DOMAIN .'/cdn-cgi/access/certs';
-    public const ALGORITHM = 'RS256';
-
+    
     protected $tokenValidator;
 
     /**
@@ -37,7 +34,7 @@ class FrontControllerPlugin
         }
 
         try {
-            $validatedToken = $this->tokenValidator->validateToken($token, self::CERTS_URL, self::ALGORITHM);
+            $validatedToken = $this->tokenValidator->validateToken($token);
             if ($validatedToken->iss !== "example.org") {
                 throw new \Exception('Access denied.');
             }
