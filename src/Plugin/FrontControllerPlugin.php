@@ -18,26 +18,27 @@ class FrontControllerPlugin
     public const CERTS_URL = self::TEAM_DOMAIN .'/cdn-cgi/access/certs';
     public const ALGORITHM = 'RS256';
 
-    protected $serviceToken;
+    protected $tokenValidator;
 
     /**
-     * @param TokenValidator $serviceToken
+     * @param TokenValidator $tokenValidator
      */
-    public function __construct (TokenValidator $serviceToken ) {
-        $this->serviceToken = $serviceToken;
+    public function __construct (TokenValidator $tokenValidator )
+    {
+        $this->tokenValidator = $tokenValidator;
     }
 
     public function aroundDispatch(FrontController $subject, callable $proceed)
     {
-        $payload = []; //$this->getMockPayload();
-
-        if (null === $payload) {
+//        $subject->get
+        $token = $subject->getRequest()->getCookie('CF_Authorization');
+        if (null === $token) {
             throw new \Exception('missing required cf authorization token');
         }
 
         try {
-            $result = $this->serviceToken->getJWT($payload, self::CERTS_URL, self::ALGORITHM);
-            if ($result->iss !== "example.org") {
+            $validatedToken = $this->tokenValidator->validateToken($token, self::CERTS_URL, self::ALGORITHM);
+            if ($validatedToken->iss !== "example.org") {
                 throw new \Exception('Access denied.');
             }
         } catch (\Exception $e) {
