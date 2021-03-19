@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Plus54\CloudFlareAccess\Plugin;
 
+use Magento\Framework\App\RequestInterface;
 use Plus54\CloudFlareAccess\Service\TokenValidator;
 use Magento\Framework\App\FrontController;
 
@@ -14,7 +15,7 @@ use Magento\Framework\App\FrontController;
  */
 class FrontControllerPlugin
 {
-    
+
     protected $tokenValidator;
 
     /**
@@ -25,10 +26,10 @@ class FrontControllerPlugin
         $this->tokenValidator = $tokenValidator;
     }
 
-    public function aroundDispatch(FrontController $subject, callable $proceed)
+    public function aroundDispatch(FrontController $subject, callable $proceed, RequestInterface $request)
     {
-//        $subject->get
-        $token = $subject->getRequest()->getCookie('CF_Authorization');
+
+        $token = $request->getCookie('CF_Authorization', null);
         if (null === $token) {
             throw new \Exception('missing required cf authorization token');
         }
