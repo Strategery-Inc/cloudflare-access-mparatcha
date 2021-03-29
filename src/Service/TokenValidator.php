@@ -15,7 +15,7 @@ class TokenValidator {
     public const CERTS_URL = self::TEAM_DOMAIN .'/cdn-cgi/access/certs';
     public const ALGORITHM = 'RS256';
 
-    private $curl;
+    private $curlClient;
     private $json;
 
     /**
@@ -24,7 +24,7 @@ class TokenValidator {
      * @param Curl $curl
      */
     public function __construct(Json $json, Curl $curl) {
-        $this->curl = $curl;
+        $this->curlClient = $curl;
         $this->json = $json;
     }
 
