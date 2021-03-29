@@ -11,14 +11,25 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "firebase/php-jwt": "dev-master"
+        "firebase/php-jwt": "dev-master",
+        "magento/framework": "^103.0.2"
     },
     "autoload": {
         "files": [
             "registration.php"
         ],
         "psr-4": {
-            "Plus54\\CloudFlare\\": ""
+            "Plus54\\CloudFlareAccess\\": "./src",
+            "Plus54\\CloudFlareAccessTests\\": "./tests"
         }
-    }
+    },
+    "require-dev": {
+        "magento/magento2-functional-testing-framework": "^3.3.0"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        }
+    ]
 }

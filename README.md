@@ -1,26 +1,52 @@
-# CloudFlare Access
+# Mage2 Module Plus54 CloudFlare
 
-Create a M2 module that will authorize CloudFlare Access requests. The documentation for CloudFlare Access request validation is linked further down below.
+    ``plus54/module-cloudflare``
 
-The module should:
+ - [Main Functionalities](#markdown-header-main-functionalities)
+ - [Installation](#markdown-header-installation)
+ - [Configuration](#markdown-header-configuration)
+ - [Specifications](#markdown-header-specifications)
+ - [Attributes](#markdown-header-attributes)
 
-1. Intercept all HTTP requests to Magento frontend controllers.
-2. If the request doesn't have a `CF_Authorization` cookie, return a 403 response with a message reading `missing required cf authorization token`.
-1. If the cookie is present, then allow the request to pass through.
-2. A store configuration setting should determine if the module is Enabled / Disabled. The default value should be `false`.
 
-## Documentation Links
-* [CloudFlare Access Request Validation](https://developers.cloudflare.com/cloudflare-one/identity/users/validating-json#python-example)
-* [Routing](https://devdocs.magento.com/guides/v2.4/extension-dev-guide/routing.html)
-* [Plugins](https://devdocs.magento.com/guides/v2.4/extension-dev-guide/plugins.html)
-* [Observers](https://devdocs.magento.com/guides/v2.4/extension-dev-guide/events-and-observers.html) and [M2 Event Cheatsheet](https://www.mageplaza.com/magento-2-module-development/magento-2-events.html)
+## Main Functionalities
+Authorize CloudFlare Access requests
 
-## Guidelines & Tips
+## Installation
+\* = in production please use the `--keep-generated` option
 
-1. Place all your code inside the `src` directory.
-2. You can install Magento inside the `magento` folder.
-   1. `composer install`
-   2. Then run `bin/magento install ...`
-   3. You can symlink your module into a folder inside `app/code` in order to test it. 
-   4. Don't forget to add it to the modules list in `app/etc/config.php` and run `bin/magento setup:upgrade`.
-3. If you already know how to, you can use unit tests to check and iterate over your work more quickly without the need of testing manually inside Magento. Place the tests inside the `tests` folder. WRITING UNIT TESTS IS NOT A REQUIREMENT unless explicitly mentioned in the assignment.
+### Type 1: Zip file
+
+ - Unzip the zip file in `app/code/Plus54`
+ - Enable the module by running `php bin/magento module:enable Plus54_CloudFlare`
+ - Apply database updates by running `php bin/magento setup:upgrade`\*
+ - Flush the cache by running `php bin/magento cache:flush`
+
+### Type 2: Composer
+
+ - Make the module available in a composer repository for example:
+    - private repository `repo.magento.com`
+    - public repository `packagist.org`
+    - public github repository as vcs
+ - Add the composer repository to the configuration by running `composer config repositories.repo.magento.com composer https://repo.magento.com/`
+ - Install the module composer by running `composer require plus54/module-cloudflare`
+ - enable the module by running `php bin/magento module:enable Plus54_CloudFlare`
+ - apply database updates by running `php bin/magento setup:upgrade`\*
+ - Flush the cache by running `php bin/magento cache:flush`
+
+
+## Configuration
+
+
+
+
+## Specifications
+
+ - Plugin
+	- beforeBeforeExecute - myPlugin > Plus54\CloudFlare\Plugin\MyPlugin
+
+
+## Attributes
+
+
+
