@@ -23,8 +23,12 @@ final class TokenValidatorTest extends TestCase
     {
         $url = 'http://example.com';
         $this->curlClient->expects($this->once())->method('get')->with($url);
+        $this->curlClient->expects($this->once())->method('getBody');
+        $this->json->expects($this->once())->method('unserialize')->with($this->isType('string'));
         $tokenValidator = new TokenValidator($this->json, $this->curlClient);
+
         $res = $tokenValidator->getPublicKeys($url);
+        $this->assertArrayHasKey('kid', $res);
         //$this->assertSame(expected: )
     }
 }
