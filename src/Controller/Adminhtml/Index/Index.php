@@ -2,23 +2,26 @@
 
 namespace Plus54\CloudFlareAccess\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\ActionInterface;
-use Plus54\CloudFlareAccess\Service\TokenValidator;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 
-class Index implements ActionInterface
+class Index implements HttpGetActionInterface
 {
-    private $tokenValidator;
+    /** @var Context */
+    private Context $context;
 
-    public function __construct(
-        TokenValidator $tokenValidator
-    )
+    public function __construct(Context $context)
     {
-        $this->tokenValidator = $tokenValidator;
+        $this->context = $context;
     }
 
     public function execute()
     {
-
         die('My Backend Controller Works!');
+    }
+
+    public function getRequest()
+    {
+        return $this->context->getRequest();
     }
 }

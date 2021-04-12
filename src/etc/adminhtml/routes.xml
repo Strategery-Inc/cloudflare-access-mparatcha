@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="admin">
-        <route id="plus54cloudflareaccess" frontName="plus54cloudflareaccess">
-            <module name="Plus54_CloudFlareAccess" before="Magento_Backend"/>
-        </route>
-        <route id="plus54cloudflareaccesscontroller" frontName="cfaccess">
-            <module name="Plus54_CloudFlareAccessController"/>
+        <!-- /cfaccess/index/index -->
+        <route id="plus54cloudflareaccess" frontName="cfaccess">
+            <module name="Plus54_CloudFlareAccess" before="Magento_Backend" />
         </route>
     </router>
 </config>

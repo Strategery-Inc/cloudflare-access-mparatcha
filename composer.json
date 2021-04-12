@@ -3,6 +3,7 @@
     "description": "Authorize CloudFlare Access requests",
     "type": "magento2-module",
     "license": "proprietary",
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Mage2Gen",
@@ -11,8 +12,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "firebase/php-jwt": "dev-master",
-        "magento/framework": "^103.0.2"
+        "firebase/php-jwt": "^5.2",
+        "magento/framework": "^103.0.2",
+        "magento/module-backend": "^102.0.2"
     },
     "autoload": {
         "files": [
