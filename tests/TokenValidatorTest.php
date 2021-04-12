@@ -15,31 +15,27 @@ final class TokenValidatorTest extends TestCase
 
     public function setUp(): void
     {
-        //$jsonBody = '{"foo": "bar"}';
-        //$url = 'http://example.com';
-        $possibleApiResponses = [
-            'http://example.com' => ['{"foo": "bar"}', ["foo" => "bar"]]
-        ];
-        $state = new \stdClass();
-        $state->url = null;
         $this->json = $this->getMockBuilder(Json::class)->getMock();
         $this->curlClient = $this->getMockBuilder(Curl::class)->getMock();
-        $this->curlClient->expects($this->any())->method('get')->with($this->callback(
-            fn($arg) => $state->url = $arg
-        ));
-        $this->curlClient->expects($this->any())->method('getBody')
-            ->willReturnCallback(fn () => $possibleApiResponses[$state->url][0]);
-            //->willReturn($jsonBody);
-        $this->json->expects($this->any())->method('unserialize')->with($possibleApiResponses[$state->url][0])
-            ->willReturn($possibleApiResponses[$state->url][1]);
-            //->with($jsonBody);
     }
-//Gabi: run test
     public function testGetPublicKeys(): void
     {
+        $url = TokenValidator::CERTS_URL;
+        $this->curlClient->expects($this->any())->method('get')->with($url);
+        $this->curlClient->expects($this->any())->method('getBody')
+            ->willReturn('{"foo": "bar"}');
+        $this->json->expects($this->any())->method('unserialize')->with('{"foo": "bar"}')
+            ->willReturn(["foo" => "bar"]);
+
         $tokenValidator = new TokenValidator($this->json, $this->curlClient);
-        $res = $tokenValidator->getPublicKeys('http://example.com');
-        $this->assertIsArray($res);
-        $this->assertArrayHasKey('foo', $res);
+        $res = $tokenValidator->getPublicKeys($url);
+    }
+    /**
+     * @depends testGetPublicKeys
+     * */
+    public function testValidateToken(): void
+    {
+        $tokenValidator = new TokenValidator($this->json, $this->curlClient);
+        //$tokenValidator->validateToken()
     }
 }

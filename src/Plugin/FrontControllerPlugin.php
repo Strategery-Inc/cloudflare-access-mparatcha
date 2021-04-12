@@ -7,6 +7,7 @@ namespace Plus54\CloudFlareAccess\Plugin;
 use Magento\Framework\App\RequestInterface;
 use Plus54\CloudFlareAccess\Service\TokenValidator;
 use Magento\Framework\App\FrontController;
+use Magento\Framework\Serialize\SerializerInterface;
 
 
 /**
@@ -15,33 +16,37 @@ use Magento\Framework\App\FrontController;
  */
 class FrontControllerPlugin
 {
-
-    protected $tokenValidator;
+    private $tokenValidator;
+    private $serializer;
 
     /**
      * @param TokenValidator $tokenValidator
      */
-    public function __construct (TokenValidator $tokenValidator )
+    public function __construct (TokenValidator $tokenValidator, SerializerInterface $serializer)
     {
         $this->tokenValidator = $tokenValidator;
+        $this->serializer = $serializer;
     }
 
     public function aroundDispatch(FrontController $subject, callable $proceed, RequestInterface $request)
     {
+        return $proceed($request);
+        /*try {
+            $token = $request->getCookie('CF_Authorization', null);//siempre devuelve NULL
+            if (is_null($token)) {
+                throw new \Exception('missing required cf authorization token');
+            }
 
-        $token = $request->getCookie('CF_Authorization', null);
-        if (null === $token) {
-            throw new \Exception('missing required cf authorization token');
-        }
-
-        try {
             $validatedToken = $this->tokenValidator->validateToken($token);
-            if ($validatedToken->iss !== "example.org") {
+            if ($validatedToken->iss !== "example.edu") { //?
                 throw new \Exception('Access denied.');
             }
+
         } catch (\Exception $e) {
-            throw new \Exception('Something was wrong, try again.');
-        }
+            throw $e;
+        }*/
+
+
     }
 }
 
