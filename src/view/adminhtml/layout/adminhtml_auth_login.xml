@@ -1,0 +1,7 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<body>
+    <referenceContainer name="form.buttons">
+        <block class="Magento\Backend\Block\Template" name="adminhtml_auth_cloudflare_buttons" template="Plus54_CloudFlareAccess::cloudflare_login_buttons.phtml"/>
+    </referenceContainer>
+</body>
+</page>

@@ -17,7 +17,13 @@ class Index implements HttpGetActionInterface
 
     public function execute()
     {
-        die('My Backend Controller Works!');
+        try {
+            // servicio => llamar al servicio TokenValidator
+            // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
+            // redirigir al dashboard
+        } catch (\Exception $e) {
+            // mostrar el mensaje de error en el frontend, usando "message manager"
+        }
     }
 
     public function getRequest()
