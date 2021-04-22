@@ -5,6 +5,7 @@ namespace Plus54\CloudFlareAccess\Controller\Adminhtml\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Plus54\CloudFlareAccess\Service\TokenValidator;
+use Firebase\JWT\JWT;
 
 class Index implements HttpGetActionInterface
 {
@@ -27,8 +28,8 @@ class Index implements HttpGetActionInterface
 
         try {
             // servicio => llamar al servicio TokenValidator
-
             $token = $this->getMockPayload();
+            die('here');
             $validatedToken = $this->tokenValidator->validateToken($token);
 
             // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
@@ -41,6 +42,7 @@ class Index implements HttpGetActionInterface
             // redirigir al dashboard
 
         } catch (\Exception $e) {
+            die('error');
             // mostrar el mensaje de error en el frontend, usando "message manager"
         }
     }
@@ -73,7 +75,8 @@ EOD,
         return $jwks;
     }
 
-    public function getMockPayload(){
+    public function getMockPayload()
+    {
         $privateKey = <<<EOD
     -----BEGIN PRIVATE KEY-----
     MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwjCr73Dzznkph
