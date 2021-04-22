@@ -78,9 +78,9 @@ EOD,
     public function getMockPayload()
     {
         $privateKey = <<<EOD
-    -----BEGIN PRIVATE KEY-----
-    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwjCr73Dzznkph
-    cJjiCN+BPLaUqDtDIvqPaZIZ2foah0Mhh8XWBsvtHxpq7KZ/zIDKijUydqXEYlXL
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwjCr73Dzznkph
+cJjiCN+BPLaUqDtDIvqPaZIZ2foah0Mhh8XWBsvtHxpq7KZ/zIDKijUydqXEYlXL
 ihIpbbmStTK8opW4vHgPBBxpQIK6GUhRNQep7z7QjF0GE7uMl2FU2+U3nrysWTlU
 OSgDEl7gaXi/IBfRetmTtU3KKNl/hgpGkMPEuk8xReO3wJrIMA4an5uffS5j7ylu
 8gcl7R+yVVn9pfEOtehGrmLlJP9jFrKMOMSfTK+VSrBsAedt1TRXfz1psVkYCn7h
