@@ -29,7 +29,19 @@ class TokenValidator {
         $this->json = $json;
     }
 
-    public function getPublicKeysFake(): array
+public function getPublicKeyFake(): array
+{
+    $publicKey = \json_decode(<<<EOD
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8kGa1pSjbSYZVebtTRBLxBz5H
+4i2p/llLCrEeQhta5kaQu/RnvuER4W8oDH3+3iuIYW4VQAzyqFpwuzjkDI+17t5t
+0tyazyZ8JXw+KgXTxldMPEL95+qVhgXvwtihXC1c5oGbRlEDvDF6Sa53rcFVsYJ4
+ehde/zUxo6UvS7UrBQIDAQAB
+-----END PUBLIC KEY-----
+EOD,true);
+    return $publicKey;
+}
+/*    public function getPublicKeysFake(): array
     {
 
         $jwks = \json_decode(<<<EOD
@@ -50,7 +62,7 @@ EOD,
 
         return $jwks;
     }
-
+*/
     /**
      * @param $url
      * @return array
@@ -69,9 +81,12 @@ EOD,
      */
     public function validateToken(string $token) : object
     {
+        //var_dump($token);die;
         //$jwks = $this->getPublicKeys(self::CERTS_URL);
-        $jwks = $this->getPublicKeysFake();
-        return JWT::decode($token, JWK::parseKeySet($jwks), array(self::ALGORITHM));
+        //$jwks = $this->getPublicKeysFake();
+        //return JWT::decode($token, JWK::parseKeySet($jwks), array(self::ALGORITHM));
+
+        var_dump(JWT::decode($token, $this->getPublicKeyFake(), array('RS256')));die;
     }
 
 

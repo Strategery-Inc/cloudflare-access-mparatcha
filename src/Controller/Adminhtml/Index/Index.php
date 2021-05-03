@@ -2,45 +2,61 @@
 
 namespace Plus54\CloudFlareAccess\Controller\Adminhtml\Index;
 
+use Firebase\JWT\JWT;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
+use Plus54\CloudFlareAccess\Service\LoginByCloudflareEmailService;
 use Plus54\CloudFlareAccess\Service\TokenValidator;
-use Firebase\JWT\JWT;
 
 class Index implements HttpGetActionInterface
 {
-
     private Context $context;
     private $tokenValidator;
+    private $loginByCloudflareEmailService;
 
     /**
      * @var Context
      * @var TokenValidator $tokenValidator
+     * @var LoginByCloudflareEmailService $loginByCloudflareEmailService
      */
-    public function __construct(Context $context, TokenValidator $tokenValidator)
-    {
+    public function __construct(
+        Context $context,
+        TokenValidator $tokenValidator,
+        LoginByCloudflareEmailService $loginByCloudflareEmailService
+    ) {
         $this->context = $context;
         $this->tokenValidator = $tokenValidator;
+        $this->loginByCloudflareEmailService = $loginByCloudflareEmailService;
     }
 
     public function execute()
     {
-
         try {
             // servicio => llamar al servicio TokenValidator
-            $token = $this->getMockPayload();
-            die('here');
-            $validatedToken = $this->tokenValidator->validateToken($token);
+            // $token = $this->getMockPayload();
 
+            // $validatedToken = $this->tokenValidator->validateToken($token);
+            $user = $this->loginByCloudflareEmailService->loginByEmail('gparatcha@plus54.com');
+            // if ($user !=== null) {
+
+            //}
+            var_dump($user->getData());
+            die('here');
             // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
 
-           /* if ($validatedToken->iss !== "example.edu") {
-                $backendUrl = $this->getUrl('*');
-                return $this->getRedirect($backendUrl);
-            }*/
+            /* if ($validatedToken->iss !== "example.edu") {
+                 $backendUrl = $this->getUrl('*');
+                 return $this->getRedirect($backendUrl);
+             }*/
 
             // redirigir al dashboard
-
+            // catch LoginByCloudflareException
+            // => set message
+            // => redirect back to login page
+        } catch (\LoginByCoudflareException $e) {
+            throw new \Exception(__('The user cannot login by Cloudflare properly'),0,$e);
+            $backendUrl = $this->getUrl('index');
+            return $this->getRedirect($backendUrl);
         } catch (\Exception $e) {
             die('error');
             // mostrar el mensaje de error en el frontend, usando "message manager"
@@ -55,8 +71,8 @@ class Index implements HttpGetActionInterface
     //FRONT-CONTROLLER-PLUGIN-TEST:
     public function getPublicKeys(): array
     {
-
-        $jwks = \json_decode(<<<EOD
+        $jwks = \json_decode(
+            <<<EOD
     {
 "keys": [
 {
@@ -71,7 +87,6 @@ class Index implements HttpGetActionInterface
 EOD,
             true
         );
-
         return $jwks;
     }
 
@@ -108,15 +123,14 @@ QnejtRYkikG25kwQFbBOjXFd776921fvIAsMie3Fnc6XUfiHAWelRgDgKL5lLcdy
 -----END PRIVATE KEY-----
 EOD;
 
-        $payload = array(
-            "iss" => "example.edu",
+        $payload = [
+            "iss" => "example.com",
             "aud" => "example.com",
+            "email" => "jorge@example.com",
             "iat" => 1356999524,
             "nbf" => 1357000000
-        );
+        ];
 
-// $jwt = JWT::encode($payload, $privateKey, 'RS256');
         return JWT::encode($payload, $privateKey, 'RS256', "CYlS9DhnWY5ZTJUgS0T9EPBn27GOSe3_j9kvnIxrTvs");
     }
-
 }
