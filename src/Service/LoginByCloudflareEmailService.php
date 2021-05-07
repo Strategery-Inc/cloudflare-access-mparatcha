@@ -40,7 +40,7 @@ class LoginByCloudflareEmailService
         $this->eventManager = $eventManager;
     }
 
-    public function loadByEmail(string $email): UserInterface
+    private function loadByEmail(string $email): UserInterface
     {
         /** @var User $userResource */
         $userResource = $this->userResourceFactory->create();
@@ -65,10 +65,8 @@ class LoginByCloudflareEmailService
         }
 
         try {
-            if (!$this->authentication($user)) {
+            if (!$this->authenticate($user)) {
                 throw new LoginByCloudflareException('LoginByCloudflareException: The user cannot authenticate by Cloudflare properly on LoginByEmail function');
-            } else {
-                $user->getResource()->recordLogin($user);
             }
             // vendor/magento/module-user/Model/User.php:654
             // else
@@ -78,7 +76,7 @@ class LoginByCloudflareEmailService
         }
     }
 
-    public function authentication(UserInterface $user): bool
+    private function authenticate(UserInterface $user): void
     {
         $result = false;
         try {
@@ -93,18 +91,19 @@ class LoginByCloudflareEmailService
                 'admin_user_authenticate_after',
                 ['username' => $user->getUserName(), 'password' => '', 'user' => $this, 'result' => $result]
             );
+            $user->getResource()->recordLogin($user);
         } catch (LocalizedException $e) {
             $user->unsetData();
             throw $e;
         }
-
+        $result = true;
         if (!$result) {
             $user->unsetData();
+            throw new \LocalizedException('Authenticate function not working properly');
         }
-        return $result;
     }
 
-    private function verifyIdentity(UserInterface $user): bool
+    private function verifyIdentity(UserInterface $user): void
     {
         // vendor/magento/module-user/Model/User.php:627
         if ($user->getIsActive() != '1') {
@@ -118,6 +117,5 @@ class LoginByCloudflareEmailService
         if (!$user->hasAssigned2Role($user->getId())) {
             throw new AuthenticationException(__('More permissions are needed to access this.'));
         }
-        $result = true;
     }
 }
