@@ -36,11 +36,11 @@ class Index implements HttpGetActionInterface
             // $token = $this->getMockPayload();
 
             // $validatedToken = $this->tokenValidator->validateToken($token);
-            $user = $this->loginByCloudflareEmailService->loginByEmail('gparatcha@plus54.com');
+            $this->loginByCloudflareEmailService->loginByEmail('gparatcha@plus54.com');
             // if ($user !=== null) {
 
             //}
-            var_dump($user->getData());
+
             die('here');
             // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
 

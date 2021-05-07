@@ -4,9 +4,6 @@ declare(strict_types=1);
 namespace Plus54\CloudFlareAccess\Service;
 
 use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\AuthenticationException;
-use Magento\Framework\Exception\LocalizedException;
-use Plus54\CloudFlareAccess\Service\LoginByCloudflareException;
 use Magento\User\Api\Data\UserInterface;
 use Magento\User\Api\Data\UserInterfaceFactory;
 use Magento\User\Model\ResourceModel\User;
@@ -60,7 +57,8 @@ class LoginByCloudflareEmailService
     public function loginByEmail(string $email): void
     {
         $user = $this->loadByEmail($email);
-        if ($user->getId() === null) {
+     //   var_dump($user->getUserId());die;
+        if ($user->getUserId() === null) {
             throw new \Exception('This user is not valid');
         }
 
@@ -76,12 +74,11 @@ class LoginByCloudflareEmailService
         }
     }
 
-    private function authenticate(UserInterface $user): void
+    private function authenticate(UserInterface $user): bool
     {
         $result = false;
         try {
-            $this->verifyIdentity($user);
-
+            $result = $this->verifyIdentity($user);
             $this->eventManager->dispatch(
                 'admin_user_authenticate_before',
                 ['email' => $user->getEmail(), 'user' => $user]
@@ -89,21 +86,23 @@ class LoginByCloudflareEmailService
 
             $this->eventManager->dispatch(
                 'admin_user_authenticate_after',
-                ['username' => $user->getUserName(), 'password' => '', 'user' => $this, 'result' => $result]
+                ['username' => $user->getUserName(), 'password' => '', 'user' => $user, 'result' => $result]
             );
             $user->getResource()->recordLogin($user);
+
         } catch (LocalizedException $e) {
             $user->unsetData();
             throw $e;
         }
-        $result = true;
+
         if (!$result) {
             $user->unsetData();
             throw new \LocalizedException('Authenticate function not working properly');
         }
+        return $result;
     }
 
-    private function verifyIdentity(UserInterface $user): void
+    private function verifyIdentity(UserInterface $user): bool
     {
         // vendor/magento/module-user/Model/User.php:627
         if ($user->getIsActive() != '1') {
@@ -114,8 +113,9 @@ class LoginByCloudflareEmailService
                 )
             );
         }
-        if (!$user->hasAssigned2Role($user->getId())) {
+        if (!$user->hasAssigned2Role($user->getUserId())) {
             throw new AuthenticationException(__('More permissions are needed to access this.'));
         }
+        return true;
     }
 }
