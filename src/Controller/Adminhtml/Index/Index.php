@@ -6,6 +6,7 @@ use Firebase\JWT\JWT;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Plus54\CloudFlareAccess\Service\LoginByCloudflareEmailService;
+use Plus54\CloudFlareAccess\Service\LoginByCloudflareException;
 use Plus54\CloudFlareAccess\Service\TokenValidator;
 
 class Index implements HttpGetActionInterface
@@ -41,7 +42,7 @@ class Index implements HttpGetActionInterface
 
             //}
 
-            die('here');
+
             // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
 
             /* if ($validatedToken->iss !== "example.edu") {
@@ -53,14 +54,11 @@ class Index implements HttpGetActionInterface
             // catch LoginByCloudflareException
             // => set message
             // => redirect back to login page
-        } catch (\LoginByCoudflareException $e) {
-            throw new \Exception(__('The user cannot login by Cloudflare properly'),0,$e);
-            $backendUrl = $this->getUrl('index');
-            return $this->getRedirect($backendUrl);
-        } catch (\Exception $e) {
-            die('error');
-            // mostrar el mensaje de error en el frontend, usando "message manager"
+        } catch (LoginByCloudflareException $e) {
+            throw new \Exception(__('The user cannot login by Cloudflare properly'), 0, $e);
         }
+        $backendUrl = $this->getUrl('index');
+        return $this->getRedirect($backendUrl);
     }
 
     public function getRequest()
