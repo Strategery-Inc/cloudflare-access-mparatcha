@@ -4,9 +4,7 @@
  */
 ?>
 <div class="actions">
-    <button
-        <?php $block->getUiId(); ?>
-            class="action-login action-primary">
+    <a href="<?= $block->getAdminUrl(); ?>" id="actionLoginCloudFlareBtn" class="action-login action-primary">
         <span><?= $block->escapeHtml(__('Sign in with CloudFlare')) ?></span>
-    </button>
+    </a>
 </div>

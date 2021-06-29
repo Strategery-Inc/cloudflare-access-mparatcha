@@ -8,6 +8,8 @@ use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\Plugin\AuthenticationException as PluginAuthenticationException;
+use Magento\Framework\Message\ManagerInterface as MessageManagerInterface;
+use Magento\Security\Model\AdminSessionsManager;
 use Magento\User\Api\Data\UserInterface;
 use Magento\User\Api\Data\UserInterfaceFactory;
 use Magento\User\Model\ResourceModel\User;
@@ -24,16 +26,25 @@ class LoginByCloudflareEmailService
     private $userResourceFactory;
     protected $eventManager;
     protected $auth;
+    private MessageManagerInterface $messageManager;
+    /**
+     * @var AdminSessionsManager
+     */
+    private AdminSessionsManager $sessionsManager;
 
     /**
      * Construct
      *
+     * @param AdminSessionsManager $sessionsManager
+     * @param MessageManagerInterface $messageManager
      * @param UserInterfaceFactory $userFactory
      * @param UserResourceFactory $userResourceFactory
      * @param ManagerInterface $eventManager
      * @param Auth $auth
      */
     public function __construct(
+        AdminSessionsManager $sessionsManager,
+        MessageManagerInterface $messageManager,
         UserInterfaceFactory $userFactory,
         UserResourceFactory $userResourceFactory,
         ManagerInterface $eventManager,
@@ -43,6 +54,8 @@ class LoginByCloudflareEmailService
         $this->userResourceFactory = $userResourceFactory;
         $this->eventManager = $eventManager;
         $this->auth = $auth;
+        $this->sessionsManager = $sessionsManager;
+        $this->messageManager = $messageManager;
     }
 
     private function loadByEmail(string $email): UserInterface
@@ -115,6 +128,11 @@ class LoginByCloudflareEmailService
                         . 'Please wait and try again later.'
                     )
                 );
+            }
+
+            $this->sessionsManager->processLogin();
+            if ($this->sessionsManager->getCurrentSession()->isOtherSessionsTerminated()) {
+                $this->messageManager->addWarningMessage(__('All other open sessions for this account were terminated'));
             }
         } catch (LocalizedException $e) {
             $user->unsetData();

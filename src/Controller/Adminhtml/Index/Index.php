@@ -3,6 +3,8 @@
 namespace Plus54\CloudFlareAccess\Controller\Adminhtml\Index;
 
 use Firebase\JWT\JWT;
+use Magento\Backend\Model\Auth;
+use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Redirect;
@@ -17,23 +19,31 @@ class Index implements HttpGetActionInterface
     private $tokenValidator;
     private $loginByCloudflareEmailService;
     protected $resultFactory;
+    protected $auth;
+    protected $backendUrl;
 
     /**
-     * @var Context
-     * @var TokenValidator $tokenValidator
+     *
+     * @param Context $context
+     * @param Auth $auth
      * @var LoginByCloudflareEmailService $loginByCloudflareEmailService
      * @var ResultFactory $resultFactory
+     * @var TokenValidator $tokenValidator
      */
     public function __construct(
         Context $context,
         TokenValidator $tokenValidator,
         LoginByCloudflareEmailService $loginByCloudflareEmailService,
-        ResultFactory $resultFactory
+        ResultFactory $resultFactory,
+        Auth $auth,
+        UrlInterface $backendUrl
     ) {
         $this->context = $context;
         $this->tokenValidator = $tokenValidator;
         $this->loginByCloudflareEmailService = $loginByCloudflareEmailService;
         $this->resultFactory = $resultFactory;
+        $this->auth = $auth;
+        $this->backendUrl = $backendUrl;
     }
 
     public function execute()
@@ -43,7 +53,7 @@ class Index implements HttpGetActionInterface
             // $token = $this->getMockPayload();
 
             // $validatedToken = $this->tokenValidator->validateToken($token);
-            $this->loginByCloudflareEmailService->loginByEmail('gparatcha@plus54.com');
+            $this->loginByCloudflareEmailService->loginByEmail('gparatchaplus@plus54.com');
 
 
             // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
@@ -54,9 +64,15 @@ class Index implements HttpGetActionInterface
         } catch (LoginByCloudflareException $e) {
             throw new \Exception(__('The user cannot login by Cloudflare properly'), 0, $e);
         }
+
+        if ($this->auth->getAuthStorage()->isFirstPageAfterLogin()) {
+            $this->auth->getAuthStorage()->setIsFirstPageAfterLogin(true);
+        }
+
+        //return $this->getRedirect($this->_backendUrl->getStartupPageUrl());
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setPath('/');
+        $resultRedirect->setPath($this->backendUrl->getStartupPageUrl());
 
         //$backendUrl = $this->getUrl('index');
         //$this->getRedirect($backendUrl);
