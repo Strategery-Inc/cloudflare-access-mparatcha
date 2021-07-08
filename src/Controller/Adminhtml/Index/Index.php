@@ -9,6 +9,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Plus54\CloudFlareAccess\Service\LoginByCloudflareEmailService;
 use Plus54\CloudFlareAccess\Service\LoginByCloudflareException;
 use Plus54\CloudFlareAccess\Service\TokenValidator;
@@ -16,19 +17,20 @@ use Plus54\CloudFlareAccess\Service\TokenValidator;
 class Index implements HttpGetActionInterface
 {
     private Context $context;
-    private $tokenValidator;
-    private $loginByCloudflareEmailService;
-    protected $resultFactory;
-    protected $auth;
-    protected $backendUrl;
+    private TokenValidator $tokenValidator;
+    private LoginByCloudflareEmailService $loginByCloudflareEmailService;
+    protected ResultFactory $resultFactory;
+    protected Auth $auth;
+    protected UrlInterface $backendUrl;
 
     /**
      *
      * @param Context $context
      * @param Auth $auth
-     * @var LoginByCloudflareEmailService $loginByCloudflareEmailService
-     * @var ResultFactory $resultFactory
-     * @var TokenValidator $tokenValidator
+     * @param UrlInterface $backendUrl
+     * @param ResultFactory $resultFactory
+     * @param TokenValidator $tokenValidator
+     * @param LoginByCloudflareEmailService $loginByCloudflareEmailService
      */
     public function __construct(
         Context $context,
@@ -48,34 +50,32 @@ class Index implements HttpGetActionInterface
 
     public function execute()
     {
-        try {
-            // servicio => llamar al servicio TokenValidator
-            // $token = $this->getMockPayload();
-
-            // $validatedToken = $this->tokenValidator->validateToken($token);
-            $this->loginByCloudflareEmailService->loginByEmail('gparatchaplus@plus54.com');
-
-
-            // servicio => buscar y loguear al usuario que tiene el mismo email que el JWT token
-            // redirigir al dashboard
-            // catch LoginByCloudflareException
-            // => set message
-            // => redirect back to login page
-        } catch (LoginByCloudflareException $e) {
-            throw new \Exception(__('The user cannot login by Cloudflare properly'), 0, $e);
-        }
-
-        if ($this->auth->getAuthStorage()->isFirstPageAfterLogin()) {
-            $this->auth->getAuthStorage()->setIsFirstPageAfterLogin(true);
-        }
-
-        //return $this->getRedirect($this->_backendUrl->getStartupPageUrl());
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $messageManager = $this->context->getMessageManager();
+        try {
+            $token = $this->getRequest()->getCookie('CF_Authorization', null);
+            if (null == $token) {
+                throw new LocalizedException(__('Missing Cloudflare authorization token.'));
+            }
+            $validatedToken = $this->tokenValidator->validateToken($token);
+            $this->loginByCloudflareEmailService->loginByEmail((string) $validatedToken->email); //'gparatchaplus@plus54.com'
+
+            if ($this->auth->getAuthStorage()->isFirstPageAfterLogin()) {
+                $this->auth->getAuthStorage()->setIsFirstPageAfterLogin(true);
+            }
+
+            $resultRedirect->setPath($this->backendUrl->getStartupPageUrl());
+        } catch (LoginByCloudflareException $e) {
+            $messageManager->addExceptionMessage($e, __('Authentication with Cloudflare failed.'));
+        } catch (LocalizedException $e) {
+            $messageManager->addExceptionMessage($e);
+        } catch (\Throwable $e) {
+            $messageManager->addExceptionMessage($e, __('Something went wrong. Please contact your administrator.'));
+        }
+
         $resultRedirect->setPath($this->backendUrl->getStartupPageUrl());
 
-        //$backendUrl = $this->getUrl('index');
-        //$this->getRedirect($backendUrl);
         return $resultRedirect;
     }
 
