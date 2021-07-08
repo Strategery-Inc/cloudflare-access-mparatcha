@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Plus54\CloudFlareAccess\Plugin;
 
 use Magento\Framework\App\RequestInterface;
-use Plus54\CloudFlareAccess\Service\TokenValidator;
+use Plus54\CloudFlareAccess\Api\TokenValidatorInterface;
 use Magento\Framework\App\FrontController;
 use Magento\Framework\Serialize\SerializerInterface;
 
@@ -20,9 +20,9 @@ class FrontControllerPlugin
     private $serializer;
 
     /**
-     * @param TokenValidator $tokenValidator
+     * @param TokenValidatorInterface $tokenValidator
      */
-    public function __construct (TokenValidator $tokenValidator, SerializerInterface $serializer)
+    public function __construct (TokenValidatorInterface $tokenValidator, SerializerInterface $serializer)
     {
         $this->tokenValidator = $tokenValidator;
         $this->serializer = $serializer;

@@ -12,12 +12,12 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Plus54\CloudFlareAccess\Service\LoginByCloudflareEmailService;
 use Plus54\CloudFlareAccess\Service\LoginByCloudflareException;
-use Plus54\CloudFlareAccess\Service\TokenValidator;
+use Plus54\CloudFlareAccess\Api\TokenValidatorInterface;
 
 class Index implements HttpGetActionInterface
 {
     private Context $context;
-    private TokenValidator $tokenValidator;
+    private TokenValidatorInterface $tokenValidator;
     private LoginByCloudflareEmailService $loginByCloudflareEmailService;
     protected ResultFactory $resultFactory;
     protected Auth $auth;
@@ -29,12 +29,12 @@ class Index implements HttpGetActionInterface
      * @param Auth $auth
      * @param UrlInterface $backendUrl
      * @param ResultFactory $resultFactory
-     * @param TokenValidator $tokenValidator
+     * @param TokenValidatorInterface $tokenValidator
      * @param LoginByCloudflareEmailService $loginByCloudflareEmailService
      */
     public function __construct(
         Context $context,
-        TokenValidator $tokenValidator,
+        TokenValidatorInterface $tokenValidator,
         LoginByCloudflareEmailService $loginByCloudflareEmailService,
         ResultFactory $resultFactory,
         Auth $auth,
